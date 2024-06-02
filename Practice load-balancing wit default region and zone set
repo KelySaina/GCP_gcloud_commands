@@ -1,0 +1,74 @@
+1. Create an Instance Template for the VM instance
+
+gcloud compute instance-templates create nucleus-nginx-server-instance-template \
+   --network=default \
+   --subnet=default \
+   --tags=network-allow-health-check \
+   --machine-type=e2-medium \
+   --image-family=debian-11 \
+   --image-project=debian-cloud \
+   --metadata=startup-script="cat << EOF > startup.sh
+	#! /bin/bash
+	apt-get update
+	apt-get install -y nginx
+	service nginx start
+	sed -i -- 's/nginx/Google Cloud Platform - '"\$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
+	EOF"
+
+2. Create a Managed Instance Group for the template
+
+gcloud compute instance-groups managed create nucleus-managed-instance-group \
+   --template=nucleus-nginx-server-instance-template --size=2
+
+3. Create Firewall rule to allow health-check
+
+gcloud compute firewall-rules create permit-tcp-rule-938 \
+  --network=default \
+  --action=allow \
+  --direction=ingress \
+  --source-ranges=130.211.0.0/22,35.191.0.0/16 \
+  --target-tags=network-allow-health-check \
+  --rules=tcp:80   
+  
+4. Set up a Global IP Adress to access the load balancer
+
+gcloud compute addresses create nucleus-static-ipv4 \
+  --ip-version=IPV4 \
+  --global
+
+5. Create a Health Check for the load balancer
+
+gcloud compute health-checks create http nucleus-lb-nginx-servers-health-check \
+  --port 80
+   
+6. Create a Backend Service
+
+gcloud compute backend-services create nucleus-nginx-server-backend-service \
+  --protocol=HTTP \
+  --port-name=http \
+  --health-checks=nucleus-lb-nginx-servers-health-check \
+  --global
+  
+7. Add the Instance Group to the Backend Service
+  
+gcloud compute backend-services add-backend nucleus-nginx-server-backend-service \
+  --instance-group=nucleus-managed-instance-group \
+  --global
+   
+8. Create an URL Map to point to the Backend Service
+
+gcloud compute url-maps create nucleus-url-map-nginx-server \
+    --default-service nucleus-nginx-server-backend-service
+
+9. Create a Target HTTP Proxy
+    
+gcloud compute target-http-proxies create nucleus-http-proxy-nginx-server \
+    --url-map nucleus-url-map-nginx-server
+
+10. Configure Global Forwarding rule from Incoming traffics to HTTP Proxy
+
+gcloud compute forwarding-rules create http-content-rule \
+   --address=nucleus-static-ipv4\
+   --global \
+   --target-http-proxy=nucleus-http-proxy-nginx-server \
+   --ports=80

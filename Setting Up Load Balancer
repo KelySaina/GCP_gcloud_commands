@@ -10,13 +10,14 @@ gcloud compute instance-templates create [TEMPLATE_NAME] \
    --machine-type=e2-medium \
    --image-family=debian-11 \
    --image-project=debian-cloud \
-   --metadata=startup-script='#!/bin/bash
-     [STARTUP_SCRIPT_HERE]'
+   --metadata=startup-script="
+     [STARTUP_SCRIPT_HERE]
+     "
      
 2. Create a Managed Instance Group for the template
 
 gcloud compute instance-groups managed create [MIG_NAME] \
-   --template=lb-backend-template --size=2 --zone=[ZONE]
+   --template=[TEMPLATE_NAME] --size=2 --zone=[ZONE]
 
 3. Create Firewall rule to allow health-check
 
@@ -48,6 +49,7 @@ gcloud compute backend-services create [BACKEND_SERVICE_NAME] \
   --global
   
 7. Add the Instance Group to the Backend Service
+
 gcloud compute backend-services add-backend [BACKEND_SERVICE_NAME] \
   --instance-group=[INSTANCE_GROUP_NAME] \
   --instance-group-zone=[ZONE] \
@@ -65,7 +67,7 @@ gcloud compute target-http-proxies create [HTTP_PROXY_NAME] \
 
 10. Configure Global Forwarding rule from Incoming traffics to HTTP Proxy
 
-gcloud compute forwarding-rules create http-content-rule \
+gcloud compute forwarding-rules create [FORWARDING_RULE_NAME] \
    --address=[STATIC_IP_NAME]\
    --global \
    --target-http-proxy=[HTTP_PROXY_NAME] \
