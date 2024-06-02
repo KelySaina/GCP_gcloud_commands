@@ -54,7 +54,12 @@ gcloud compute backend-services add-backend [BACKEND_SERVICE_NAME] \
   --instance-group=[INSTANCE_GROUP_NAME] \
   --instance-group-zone=[ZONE] \
   --global
- 
+  
+*** Map the port to Service port ***
+
+gcloud compute instance-groups set-named-ports [MIG_NAME] \
+  --named-ports http:8083
+  
 8. Create an URL Map to point to the Backend Service
 
 gcloud compute url-maps create [URL_MAP_NAME] \

@@ -7,22 +7,26 @@ gcloud compute instance-templates create nucleus-nginx-server-instance-template 
    --machine-type=e2-medium \
    --image-family=debian-11 \
    --image-project=debian-cloud \
-   --metadata=startup-script="cat << EOF > startup.sh
+   --metadata=startup-script="
 	#! /bin/bash
 	apt-get update
 	apt-get install -y nginx
 	service nginx start
 	sed -i -- 's/nginx/Google Cloud Platform - '"\$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
-	EOF"
+	"
 
 2. Create a Managed Instance Group for the template
 
 gcloud compute instance-groups managed create nucleus-managed-instance-group \
-   --template=nucleus-nginx-server-instance-template --size=2
+   --template=nucleus-nginx-server-instance-template --size=1
+
+
+gcloud compute instance-groups managed create nucleus-managed-instance-group-2 \
+   --template=nucleus-nginx-server-instance-template --size=1
 
 3. Create Firewall rule to allow health-check
 
-gcloud compute firewall-rules create permit-tcp-rule-938 \
+gcloud compute firewall-rules create accept-tcp-rule-923 \
   --network=default \
   --action=allow \
   --direction=ingress \
@@ -49,10 +53,14 @@ gcloud compute backend-services create nucleus-nginx-server-backend-service \
   --health-checks=nucleus-lb-nginx-servers-health-check \
   --global
   
-7. Add the Instance Group to the Backend Service
+7. Add the Instance Groups to the Backend Service
   
 gcloud compute backend-services add-backend nucleus-nginx-server-backend-service \
   --instance-group=nucleus-managed-instance-group \
+  --global
+
+gcloud compute backend-services add-backend nucleus-nginx-server-backend-service \
+  --instance-group=nucleus-managed-instance-group-2 \
   --global
    
 8. Create an URL Map to point to the Backend Service
