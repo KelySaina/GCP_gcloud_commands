@@ -1,0 +1,9 @@
+###---CREATE VIRTUAL MACHINE INSTANCE BASIC---###
+
+gcloud compute instances create [INSTANCE_NAME] \
+    --zone=[ZONE] \
+    --tags=[GROUP_TAG] \
+    --machine-type=e2-micro \
+    --image-family=debian-11 \
+    --image-project=debian-cloud
+    
