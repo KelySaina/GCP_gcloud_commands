@@ -26,7 +26,7 @@ gcloud compute instance-groups managed create nucleus-managed-instance-group-2 \
 
 3. Create Firewall rule to allow health-check
 
-gcloud compute firewall-rules create accept-tcp-rule-923 \
+gcloud compute firewall-rules create grant-tcp-rule-807 \
   --network=default \
   --action=allow \
   --direction=ingress \

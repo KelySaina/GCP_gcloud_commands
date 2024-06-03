@@ -1,0 +1,9 @@
+###---MAKE AN OBJECT PUBLICLY ACCESSIBLE---###
+***FOLDER_NAME is optional if OBJECT not in  a folder***
+
+gsutil acl ch -u AllUsers:R gs://[YOUR_BUCKET_NAME]/[FOLDER_NAME]/[OBJECT]
+
+###---REMOE PUBLIC ACCESS FROM AN OBJECT---###
+***FOLDER_NAME is optional if OBJECT not in  a folder***
+
+gsutil acl ch -d AllUsers:R gs://[YOUR_BUCKET_NAME]/[FOLDER_NAME]/[OBJECT]

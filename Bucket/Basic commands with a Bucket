@@ -1,0 +1,33 @@
+###---CREATE BUCKET---###
+***Make sure region is set***
+
+gsutil mb gs://[YOUR_BUCKET_NAME]
+
+###---UPLOAD OBJECT TO BUCKET---###
+***SRC can be another Bucket***
+
+gsutil cp [SRC] gs://[YOUR_BUCKET_NAME]
+
+###---CREATE A FOLDER AND PLACE AN IMAGE WITHIN---***
+***SRC can be another Bucket***
+
+gsutil cp [SRC] gs://[YOUR_BUCKET_NAME]/[FOLDER_NAME]/
+
+###---DOWNLOAD OBJECT FROM BUCKET---###
+***FOLDER_NAME is optional if OBJECT not in  a folder***
+
+gsutil cp -r gs://[YOUR_BUCKET_NAME]/[FOLDER_NAME]/[OBJECT] [DEST]
+
+###---LIST CONTENT OF A BUCKET---###
+
+gsutil ls gs://[YOUR_BUCKET_NAME]
+
+###---DISPLAY OBJECT DETAILS---###
+***FOLDER_NAME is optional if OBJECT not in  a folder***
+
+gsutil ls -l gs://[YOUR_BUCKET_NAME]/[FOLDER_NAME]/[OBJECT]
+
+###---DELETE AN OBJECT FROM BUCKET---###
+***FOLDER_NAME is optional if OBJECT not in  a folder***
+
+gsutil rm gs://[YOUR_BUCKET_NAME]/[FOLDER_NAME]/[OBJECT]

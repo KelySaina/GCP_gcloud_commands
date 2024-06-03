@@ -1,0 +1,8 @@
+gcloud config set compute/region europe-west4
+gcloud config set compute/zone europe-west4-c
+
+gcloud compute instances create nucleus-jumphost-919 \
+    --tags=jumphost-tag \
+    --machine-type=e2-micro \
+    --image-family=debian-11 \
+    --image-project=debian-cloud

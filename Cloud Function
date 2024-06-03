@@ -1,0 +1,37 @@
+###---CREATE A BUCKET FOR CLOUD FUNCTION---###
+
+1. Create the directory and file
+
+mkdir [DIRECTORY_NAME] && cd [DIRECTORY_NAME]
+
+2. Create the function
+
+nano [FILE_NAME]
+
+3. Create a Bucket to store the function
+
+gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
+
+###---DEPLOY THE CLOUD FUNCTION---###
+
+1. Disable Cloud Function API
+
+gcloud services disable cloudfunctions.googleapis.com
+
+2. Re-enable Cloud Function API
+
+gcloud services enable cloudfunctions.googleapis.com
+
+3. Add the artifactregistry.reader permission for your appspot service account
+
+gcloud projects add-iam-policy-binding [PROJECT_ID] \
+--member="serviceAccount:[PROJECT_ID]@appspot.gserviceaccount.com" \
+--role="roles/artifactregistry.reader"
+
+4. Deploy the Function
+
+gcloud functions deploy helloWorld \
+  --stage-bucket [BUCKET_NAME] \
+  --trigger-topic hello_world \
+  --runtime nodejs20
+  
