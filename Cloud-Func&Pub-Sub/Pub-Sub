@@ -1,0 +1,35 @@
+###---Create a topic---###
+
+gcloud pubsub topics create [TOPIC_NAME]
+
+###---List all topics---###
+
+gcloud pubsub topics list
+
+###---Delete a topic---###
+
+gcloud pubsub topics delete [TOPIC_NAME]
+
+###---Create a subscription to a topic---###
+
+gcloud  pubsub subscriptions create --topic [TOPIC_NAME] [SUB_NAME]
+
+###---List all subscription to a topic---###
+
+gcloud pubsub topics list-subscriptions [TOPIC_NAME]
+
+###---Delete a subscription---###
+
+gcloud pubsub subscriptions delete [SUB_NAME]
+
+###---Publish a message to a topic---###
+
+gcloud pubsub topics publish [TOPIC_NAME] --message "[MESSAGE]"
+
+###---Pull message using subscription---###
+***Only pull one message***
+
+gcloud pubsub subscriptions pull --auto-ack [SUB_NAME]
+
+***Pull message within limit***
+gcloud pubsub subscriptions pull mySubscription --auto-ack --limit=[NB_OF_MESSAGE]
